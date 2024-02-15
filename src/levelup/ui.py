@@ -1,6 +1,7 @@
 import logging
 from typing import Callable
-from levelup.controller import GameController, Direction
+from levelup.controller import GameController
+from levelup.direction import Direction
 
 VALID_DIRECTIONS = [x.value for x in Direction]
 VALID_COMMANDS = VALID_DIRECTIONS + ["q"]

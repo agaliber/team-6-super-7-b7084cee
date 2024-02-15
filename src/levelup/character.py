@@ -1,5 +1,11 @@
+from levelup.position import Position
+from levelup.direction import Direction
+from levelup.map import Map
+
+DEFAULT_CHARACTER_NAME = "Character"
 class Character:
-        name = ""
+    # In python, we don't use getters. So no getPosition or getName for this class
+    name = ""
     current_position :Position = Position(-100,-100)
     map :Map = Map()
 

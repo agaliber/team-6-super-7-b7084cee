@@ -1,68 +1,62 @@
-import logging
-from dataclasses import dataclass
-from enum import Enum
+from levelup.character import Character
+from levelup.direction import Direction
+from levelup.map import Map
+from levelup.position import Position
 
 
-DEFAULT_CHARACTER_NAME = "Character"
 
-#TODO: ADD THINGS YOU NEED FOR STATUS
-@dataclass
+
 class GameStatus:
-    character_name: str = DEFAULT_CHARACTER_NAME
-    # NOTE - Game status will have this as a tuple. The Position should probably be in a class
+    character_name: str = ""
     current_position: tuple = (-100,-100)
     move_count: int = 0
 
     def __str__(self) -> str:
         return f"{self.character_name} is currently on {self.current_position} and moved {self.move_count} times."
 
-class Direction(Enum):
-    NORTH = "n"
-    SOUTH = "s"
-    EAST = "e"
-    WEST = "w"
-
-class CharacterNotFoundException(Exception):
-    pass
-
-class InvalidMoveException(Exception):
-    pass
-
 class GameController:
-
-
     status: GameStatus
+    character: Character
+    map: Map
 
     def __init__(self):
         self.status = GameStatus()
 
     def start_game(self):
-        pass
+        if self.character == None:
+            self.create_character(character_name="")
+        self.map = Map()
+        self.character.enter_map(self.map)
 
-    # Pre-implemented to demonstrate ATDD
-    # TODO: Update this if it does not match your design (hint - it doesnt)
+        self.status.current_position = (self.character.current_position.x, self.character.current_position.y)
+        self.status.move_count = 0
+
     def create_character(self, character_name: str) -> None:
-        if character_name is not None and character_name != "":
-            self.status.character_name = character_name
-        else:
-            self.status.character_name = DEFAULT_CHARACTER_NAME
+        self.character = Character(character_name)
+        self.status.character_name = self.character.name
 
     def move(self, direction: Direction) -> None:
-        # TODO: Implement move - should call something on another class
-        # TODO: Should probably also update the game results
-        pass
+        self.character.move(direction)
+        self.status.current_position = (self.character.current_position.x, self.character.current_position.y)
+        self.status.move_count = self.status.move_count + 1
 
+    ## ************************************************
+    ## METHODS THAT EXIST JUST TO HELP WITH TESTING 
+    ## ************************************************
     def set_character_position(self, xycoordinates: tuple) -> None:
-        # TODO: IMPLEMENT THIS TO SET CHARACTERS CURRENT POSITION -- exists to be testable
-        pass
+        x = xycoordinates[0]
+        y = xycoordinates[1]
+        self.character.current_position = Position(x,y)
+        self.status.current_position = xycoordinates
 
     def set_current_move_count(self, move_count: int) -> None:
-        # TODO: IMPLEMENT THIS TO SET CURRENT MOVE COUNT -- exists to be testable
-        pass
+        self.status.move_count = move_count
 
     def get_total_positions(self) -> int:
-        # TODO: IMPLEMENT THIS TO GET THE TOTAL POSITIONS FROM THE MAP - - exists to be
-        # testable
-        return -10
+        return self.map.num_positions
+    
+    def initalize_game_for_testing(self) -> None:
+        self.create_character("")
+        self.start_game()
 
     
