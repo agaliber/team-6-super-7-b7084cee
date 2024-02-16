@@ -23,7 +23,7 @@ class GameController:
         self.status = GameStatus()
 
     def start_game(self):
-        if self.character == None:
+        if self.character is None:
             self.create_character(character_name="")
         self.map = Map()
         self.character.enter_map(self.map)
