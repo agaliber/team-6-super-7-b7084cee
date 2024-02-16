@@ -5,35 +5,29 @@ from levelup.direction import Direction
 from unittest.mock import patch
 
 class TestCharacter(TestCase):
+    ARBITRARY_NAME = "MyName"
 
-    def setUp(self):
-        self.character = Character("MyName")
+    def test_init(self):
+        testobj = Character(self.ARBITRARY_NAME)
+        self.assertEqual(self.ARBITRARY_NAME, testobj.name)
 
-    @patch.object(Character, "enter_map")
-    def test_enter_map_sets_map_and_updates_position(self, mock_enter_map):
-        stubbed_map = MapDouble()
-        mock_enter_map.return_value = None
-        self.character.enter_map(stubbed_map)
+    def test_init_when_empty(self):
+        testobj = Character("  ")
+        self.assertEqual(DEFAULT_CHARACTER_NAME, testobj.name)
 
-        mock_enter_map.assert_called_once_with(stubbed_map)
-        self.assertEqual(self.character.map, stubbed_map)
-        self.assertEqual(self.character.current_position, stubbed_map.starting_position)
+    def test_enter_map_sets_map_and_updates_position(self):
+        testobj = Character(self.ARBITRARY_NAME)
+        stubbed_map = MapDouble()
+        testobj.enter_map(stubbed_map)
+        self.assertEqual(stubbed_map, testobj.map)
+        self.assertEqual(testobj.current_position, stubbed_map.starting_position)
 
-    @patch.object(Character, "move")
-    def test_move_updates_position(self, mock_move):
-        mock_move.return_value = None
-        self.character.map = MapDouble()
-        self.character.move(Direction.EAST)
+    def test_move_updates_position(self):
+        testobj = Character(self.ARBITRARY_NAME)
+        stubbed_map = MapDouble()
+        testobj.map = stubbed_map
+        
+        testobj.move(Direction.EAST)
 
-        mock_move.assert_called_once_with(Direction.EAST)
-        self.assertEqual(self.character.current_position.x, self.character.map.STUBBED_X)
-        self.assertEqual(self.character.current_position.y, self.character.map.STUBBED_Y)
-
-    def test_init_with_name(self):
-        expected_name = "MyName"
-        character = Character(expected_name)
-        self.assertEqual(character.name, expected_name)
-
-    def test_init_with_empty_name(self):
-        character = Character("")
-        self.assertEqual(character.name, DEFAULT_CHARACTER_NAME)
+        self.assertEqual(stubbed_map.STUBBED_X, testobj.current_position.x)
+        self.assertEqual(stubbed_map.STUBBED_Y, testobj.current_position.y)
