@@ -44,7 +44,8 @@ class TestMap(TestCase):
         testobj = Map()
         startingPosition = Position(0,0)
         expectedPosition = Position(0,1)
-        actualPosition = testobj.calculate_new_position(startingPosition, Direction.NORTH)
+        actualPosition = testobj.calculate_new_position(
+            startingPosition, Direction.NORTH)
         self.assertEqual(expectedPosition, actualPosition)
 
     def test_calculate_new_position_when_valid_SOUTH(self):
